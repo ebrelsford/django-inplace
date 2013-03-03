@@ -75,7 +75,7 @@ class PlaceMapNode(template.Node):
         self.width = width or ''
         self.height = height or ''
         self.zoom = zoom or 16
-        self.template_name = template.Variable(template_name or '"inplace/cloudmade/map.html"')
+        self.template_name = template.Variable(template_name or '"inplace/leaflet/map.html"')
 
     def render(self, context):
         try:
