@@ -19,7 +19,7 @@ CLASSIFIERS = [
 setup(
     author="Eric Brelsford",
     author_email="ebrelsford@gmail.com",
-    name='django-places',
+    name='django-inplace',
     version=inplace.__version__,
     description='A set of helpers for writing place-based applications with GeoDjango.',
     long_description=open(os.path.join(os.path.dirname(__file__), 'README.rst')).read(),

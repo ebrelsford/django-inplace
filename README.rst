@@ -1,5 +1,5 @@
-django-places
-=============
+django-inplace
+==============
 
 A set of helpers for writing place-based applications with GeoDjango.
 
