@@ -17,7 +17,6 @@ class GeoJSONSerializer(Serializer):
         data = self.to_simple(data, options)
 
         if 'objects' in data:
-            print len(data['objects'])
             return geojson.dumps(self._get_feature_collection(data['objects']))
         return data
 

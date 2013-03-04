@@ -89,7 +89,6 @@ class AddAppModelMixin(object):
             'model': self.model,
             'model_name': self.model_name,
         })
-        print context
         return context
 
 
@@ -103,7 +102,6 @@ class PlacesPopupView(AddAppModelMixin, DefaultTemplateMixin, DetailView):
 
     def get_template_names(self):
         names = super(PlacesPopupView, self).get_template_names()
-        print 'Looking for these:', names
         return names
 
 
