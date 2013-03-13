@@ -6,6 +6,10 @@ from django.views.generic.detail import BaseDetailView, DetailView
 from django.views.generic.list import BaseListView, ListView
 
 
+def module_name():
+    return __name__.split('.')[0]
+
+
 class GeoJSONResponseMixin(object):
     """A mixin that renders Places as GeoJSON."""
     response_class = HttpResponse
@@ -92,21 +96,29 @@ class AddAppModelMixin(object):
         return context
 
 
-class PlacesDetailView(AddAppModelMixin, DefaultTemplateMixin, DetailView):
-    default_template_name = 'inplace/detail.html'
+class PlacesDetailView(AddAppModelMixin, DetailView):
+
+    def get_template_names(self):
+        return [
+            '%s/%s/%s%s.html' % (module_name(), self.app_name, self.model_name,
+                                 self.template_name_suffix),
+            '%s/detail.html' % module_name(),
+        ]
 
 
-class PlacesPopupView(AddAppModelMixin, DefaultTemplateMixin, DetailView):
-    default_template_name = 'inplace/popup.html'
+class PlacesPopupView(AddAppModelMixin, DetailView):
     template_name_suffix='_popup'
 
     def get_template_names(self):
-        names = super(PlacesPopupView, self).get_template_names()
-        return names
+        return [
+            '%s/%s/%s%s.html' % (module_name(), self.app_name, self.model_name,
+                                 self.template_name_suffix),
+            '%s/popup.html' % module_name(),
+        ]
 
 
 class PlacesListView(AddAppModelMixin, DefaultTemplateMixin, ListView):
-    default_template_name = 'inplace/list.html'
+    default_template_name = '%s/list.html' % module_name()
 
 
 class PlacesGeoJSONListView(GeoJSONListView):
