@@ -19,7 +19,6 @@ $(document).ready(function() {
 
     map.addLayer(cloudmade);
 
-    var latlngs = [];
     var feature_layer = new L.GeoJSON(null, {
 
         {% block layer_options %}
@@ -30,7 +29,6 @@ $(document).ready(function() {
         },
 
         pointToLayer: function(data, latlng) {
-            latlngs.push(latlng);
             return new L.marker(latlng);
         },
 
@@ -56,7 +54,7 @@ $(document).ready(function() {
     $.get('{{ places_url }}', function(collection) {
         feature_layer.addData(collection);
         map.addLayer(feature_layer);
-        map.fitBounds(new L.LatLngBounds(latlngs));
+        map.fitBounds(feature_layer.getBounds());
     });
 
 });
