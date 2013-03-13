@@ -1,4 +1,5 @@
 import geojson
+import json
 
 from django.http import HttpResponse
 from django.views.generic.base import TemplateResponseMixin
@@ -28,11 +29,13 @@ class GeoJSONResponseMixin(object):
         """
         Get a Feature for a Place.
         """
+        if place.polygon:
+            geometry = place.polygon
+        else:
+            geometry = place.centroid
         return geojson.Feature(
             place.id,
-            geometry=geojson.Point(
-                coordinates=(place.centroid.x, place.centroid.y)
-            ),
+            geometry=json.loads(geometry.geojson),
             properties=self.get_properties(place),
         )
 
