@@ -10,9 +10,7 @@ def make_place_patterns(app_name, model_name, model_class):
 
         url(r'^$',
             PlacesListView.as_view(
-                app_name=app_name,
                 model=model_class,
-                model_name=model_name,
             ),
             name='%s_%s' % (app_name, model_name),
         ),
@@ -34,18 +32,14 @@ def make_place_patterns(app_name, model_name, model_class):
 
         url(r'^(?P<pk>\d+)/$',
             PlacesDetailView.as_view(
-                app_name=app_name,
                 model=model_class,
-                model_name=model_name,
             ),
             name='%s_%s_detail' % (app_name, model_name),
         ),
 
         url(r'^(?P<pk>\d+)/popup/$',
             PlacesPopupView.as_view(
-                app_name=app_name,
                 model=model_class,
-                model_name=model_name,
                 template_name_suffix='_popup'
             ),
             name='%s_%s_detail_popup' % (app_name, model_name),

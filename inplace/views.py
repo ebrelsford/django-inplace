@@ -86,15 +86,19 @@ class DefaultTemplateMixin(TemplateResponseMixin):
 
 
 class AddAppModelMixin(object):
-    app_name = None
-    model_name = None
+
+    def _get_app_name(self):
+        return self.model._meta.app_label
+
+    def _get_model_name(self):
+        return self.model.__name__.lower()
 
     def get_context_data(self, **kwargs):
         context = super(AddAppModelMixin, self).get_context_data(**kwargs)
         context.update({
-            'app_name': self.app_name,
+            'app_name': self._get_app_name(),
             'model': self.model,
-            'model_name': self.model_name,
+            'model_name': self._get_model_name(),
         })
         return context
 
@@ -103,7 +107,8 @@ class PlacesDetailView(AddAppModelMixin, DetailView):
 
     def get_template_names(self):
         return [
-            '%s/%s/%s%s.html' % (module_name(), self.app_name, self.model_name,
+            '%s/%s/%s%s.html' % (module_name(), self._get_app_name(),
+                                 self._get_model_name(),
                                  self.template_name_suffix),
             '%s/detail.html' % module_name(),
         ]
@@ -114,7 +119,8 @@ class PlacesPopupView(AddAppModelMixin, DetailView):
 
     def get_template_names(self):
         return [
-            '%s/%s/%s%s.html' % (module_name(), self.app_name, self.model_name,
+            '%s/%s/%s%s.html' % (module_name(), self._get_app_name(),
+                                 self._get_model_name(),
                                  self.template_name_suffix),
             '%s/popup.html' % module_name(),
         ]
