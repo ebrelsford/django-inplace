@@ -1,6 +1,5 @@
 import geojson
 
-from django.contrib.gis.geos.point import GEOSGeometry
 from tastypie.serializers import Serializer
 
 
@@ -15,10 +14,8 @@ class GeoJSONSerializer(Serializer):
 
     def to_geojson(self, data, options={}):
         data = self.to_simple(data, options)
-
-        if 'objects' in data:
-            return geojson.dumps(self._get_feature_collection(data['objects']))
-        return data
+        data['objects'] = [self._get_feature_collection(data['objects']),]
+        return geojson.dumps(data)
 
     def _get_feature_collection(self, places):
         return geojson.FeatureCollection(
@@ -26,12 +23,9 @@ class GeoJSONSerializer(Serializer):
         )
 
     def _get_feature(self, place):
-        centroid = GEOSGeometry(place['centroid'])
         return geojson.Feature(
             place['id'],
-            geometry=geojson.Point(
-                coordinates=(centroid.x, centroid.y),
-            ),
+            geometry=place['centroid'],
             properties=place,
         )
 
@@ -40,7 +34,7 @@ class GeoJSONSerializer(Serializer):
 An example of using the GeoJSONSerializer:
 
 from tastypie.constants import ALL
-from tastypie.resources import ModelResource
+from tastypie.contrib.gis.resources import ModelResource
 
 from places.api.serializers import GeoJSONSerializer
 from pops.models import Building
