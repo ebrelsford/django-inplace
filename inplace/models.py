@@ -2,10 +2,14 @@ from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
 
 
+class PlaceManager(models.GeoManager):
+    pass
+
+
 class Place(models.Model):
     """A place."""
 
-    objects = models.GeoManager()
+    objects = PlaceManager()
 
     centroid = models.PointField(_('centroid'),
         null=True,
