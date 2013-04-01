@@ -14,7 +14,10 @@ class GeoJSONSerializer(Serializer):
 
     def to_geojson(self, data, options={}):
         data = self.to_simple(data, options)
-        data['objects'] = [self._get_feature_collection(data['objects']),]
+        try:
+            data['objects'] = [self._get_feature_collection(data['objects']),]
+        except Exception:
+            pass
         return geojson.dumps(data)
 
     def _get_feature_collection(self, places):
