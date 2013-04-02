@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add boundary layer</h1>
+<h2>Step 2</h2>
+<p>Add boundaries by selecting a field from the shapefile to use as a label. Examples of values in this field are given.</p>
+<p>Pick a field that is unique and will be familiar to people looking at it later.</p>
+<form method="post" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" />
+</form>
+{% endblock %}

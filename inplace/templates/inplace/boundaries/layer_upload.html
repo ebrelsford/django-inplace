@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add boundary layer</h1>
+<h2>Step 1</h2>
+<div>
+    Add a shapefile of polygons to use as boundaries for places by giving the 
+    layer a name and selecting the zip file containing the shapefile below.
+</div>
+<form enctype="multipart/form-data" method="post" action=".">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" />
+</form>
+{% endblock %}

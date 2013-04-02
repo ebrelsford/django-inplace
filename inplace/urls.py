@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import include, patterns, url
 
+from boundaries.views import BoundaryAddView, LayerUploadView
 from .models import Place
 from .views import (PlacesGeoJSONDetailView, PlacesGeoJSONListView,
                     PlacesDetailView, PlacesListView, PlacesPopupView)
@@ -48,6 +49,10 @@ def make_place_patterns(app_name, model_name, model_class):
     )
 
 urlpatterns = patterns('',
+    url(r'^boundaries/layers/add/$', LayerUploadView.as_view(),
+        name='layer_upload'),
+    url(r'^boundaries/layers/(?P<pk>\d+)/add-boundaries/$',
+        BoundaryAddView.as_view(), name='boundary_add'),
 )
 
 for place_subclass in Place.__subclasses__():
