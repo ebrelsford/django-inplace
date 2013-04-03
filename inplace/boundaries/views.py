@@ -2,12 +2,15 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, FormView
 
+from braces.views import LoginRequiredMixin, PermissionRequiredMixin
+
 from .forms import BoundaryAddForm, LayerUploadForm
 from .models import Layer
 
 
-class LayerUploadView(CreateView):
+class LayerUploadView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = LayerUploadForm
+    permission_required = ('boundaries.add_layer',)
     template_name = 'inplace/boundaries/layer_upload.html'
 
     def get_success_url(self):
@@ -15,8 +18,9 @@ class LayerUploadView(CreateView):
         return reverse('inplace:boundary_add', kwargs={'pk': self.object.pk})
 
 
-class BoundaryAddView(FormView):
+class BoundaryAddView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
     form_class = BoundaryAddForm
+    permission_required = ('boundaries.add_boundary',)
     template_name = 'inplace/boundaries/boundary_add.html'
 
     def _get_layer(self):

@@ -30,6 +30,7 @@ setup(
     install_requires=[
         'Django>=1.3.1',
         'geojson>=1.0.1',
+        'django-braces==1.0.0',
     ],
     packages=find_packages(),
     include_package_data=True,
