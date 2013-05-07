@@ -1,7 +1,9 @@
 import geojson
 import json
 
+from django.contrib.gis.shortcuts import render_to_kml
 from django.http import HttpResponse
+from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import BaseDetailView, DetailView
 from django.views.generic.list import BaseListView, ListView
@@ -139,3 +141,22 @@ class PlacesGeoJSONListView(GeoJSONListView):
 
 class PlacesGeoJSONDetailView(GeoJSONDetailView):
     pass
+
+
+class KMLView(View):
+    response_class = HttpResponse
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        return self.render_to_response(context)
+
+    def render_to_response(self, context, **response_kwargs):
+        # Expects 'places' in context, Place models fetched with .kml()
+        response = render_to_kml('gis/kml/placemarks.kml', context)
+
+        # Add header to download as an attachment
+        if context.get('download', False):
+            response['Content-Disposition'] = (
+                'attachment; filename="%s.kml"' % context.get('filename', 'places')
+            )
+        return response
