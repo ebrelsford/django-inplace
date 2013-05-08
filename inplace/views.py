@@ -62,7 +62,7 @@ class GeoJSONResponseMixin(object):
         Render to GeoJSON.
         """
         return self.response_class(
-            geojson.dumps(self.get_feature_collection()),
+            geojson.dumps(self.get_feature_collection(), separators=(',', ':')),
             mimetype='application/json',
         )
 
