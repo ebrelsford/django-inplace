@@ -4,6 +4,7 @@ configured as boundaries on the front- and backend for selecting Places.
 
 """
 from django.contrib.gis.db import models
+from django.contrib.gis.geos import MultiPolygon
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -28,12 +29,25 @@ class Boundary(models.Model):
 
     geometry = models.MultiPolygonField(_('geometry'))
 
+    simplified_geometry = models.MultiPolygonField(_('simplified geometry'),
+        blank=True,
+        null=True,
+    )
+
     layer = models.ForeignKey('Layer',
         verbose_name=_('layer'),
     )
 
     def __unicode__(self):
         return '%s %s' % (self.layer.name, self.label)
+
+    def save(self, *args, **kwargs):
+        # Simplify enough to reduce size significantly without having an
+        # obvious effect on the geometry
+        simplified = MultiPolygon(self.geometry.simplify(tolerance=0.0001))
+        self.simplified_geometry = simplified
+
+        super(Boundary, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ('layer__name', 'label',)
