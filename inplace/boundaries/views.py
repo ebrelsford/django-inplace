@@ -1,9 +1,14 @@
+import geojson
+import json
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.views.generic import CreateView, FormView
 
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 
+from ..views import GeoJSONResponseMixin, JSONResponseView
 from .forms import BoundaryAddForm, LayerUploadForm
 from .models import Layer
 
@@ -44,3 +49,28 @@ class BoundaryAddView(LoginRequiredMixin, PermissionRequiredMixin, FormView):
         messages.success(self.request,
                          'Successfully added boundaries to layer %s' % layer.name)
         return reverse('inplace:boundary_add', kwargs={'pk': layer.pk})
+
+
+class LayerView(GeoJSONResponseMixin, JSONResponseView):
+
+    def get_context_data(self, **kwargs):
+        return self.get_features()
+
+    def get_features(self):
+        try:
+            layer = Layer.objects.get(
+                name__iexact=self.kwargs['name'],
+            )
+        except Exception:
+            raise Http404
+
+        features = []
+        for boundary in layer.boundary_set.all():
+            features.append(geojson.Feature(
+                boundary.pk,
+                geometry=json.loads(boundary.simplified_geometry.geojson),
+                properties={
+                    'boundary_label': boundary.label,
+                }
+            ))
+        return features
