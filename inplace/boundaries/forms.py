@@ -85,6 +85,8 @@ class LayerUploadForm(forms.ModelForm):
         # create a temporary file to write the zip archive to
         tmp = tempfile.NamedTemporaryFile(suffix='.zip', mode = 'w')
 
+        print 'tmp.name:', tmp.name
+
         # write zip to tmp sandbox
         self._write_file(tmp.name, filefield_data)
 
@@ -145,6 +147,7 @@ def open_zipped_shapefile(filename):
 
     # unpack contents into tmp directory
     tmp_dir = tempfile.gettempdir()
+    zfile.extractall(path=tmp_dir)
     for info in zfile.infolist():
         # skip directories in zipfile
         if info.filename[-1] == '/':
