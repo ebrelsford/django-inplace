@@ -19,7 +19,7 @@ class BoundaryManager(models.GeoManager):
             return qs
 
 
-class Boundary(models.Model):
+class BaseBoundary(models.Model):
 
     objects = BoundaryManager()
 
@@ -34,6 +34,23 @@ class Boundary(models.Model):
         null=True,
     )
 
+    def save(self, *args, **kwargs):
+        # Simplify enough to reduce size significantly without having an
+        # obvious effect on the geometry
+        simplified = MultiPolygon(self.geometry.simplify(tolerance=0.0001))
+        self.simplified_geometry = simplified
+
+        super(BaseBoundary, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.label
+
+    class Meta:
+        abstract = True
+
+
+class LayeredBoundaryMixin(models.Model):
+
     layer = models.ForeignKey('Layer',
         verbose_name=_('layer'),
     )
@@ -41,13 +58,11 @@ class Boundary(models.Model):
     def __unicode__(self):
         return '%s %s' % (self.layer.name, self.label)
 
-    def save(self, *args, **kwargs):
-        # Simplify enough to reduce size significantly without having an
-        # obvious effect on the geometry
-        simplified = MultiPolygon(self.geometry.simplify(tolerance=0.0001))
-        self.simplified_geometry = simplified
+    class Meta:
+        abstract = True
 
-        super(Boundary, self).save(*args, **kwargs)
+
+class Boundary(LayeredBoundaryMixin, BaseBoundary):
 
     class Meta:
         ordering = ('layer__name', 'label',)

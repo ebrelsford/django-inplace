@@ -125,6 +125,7 @@ class PlacesDetailView(AddAppModelMixin, DetailView):
 
     def get_template_names(self):
         return [
+            self.template_name,
             '%s/%s/%s%s.html' % (module_name(), self._get_app_name(),
                                  self._get_model_name(),
                                  self.template_name_suffix),
