@@ -37,7 +37,12 @@ class BaseBoundary(models.Model):
     def save(self, *args, **kwargs):
         # Simplify enough to reduce size significantly without having an
         # obvious effect on the geometry
-        simplified = MultiPolygon(self.geometry.simplify(tolerance=0.0001))
+        simplified = self.geometry.simplify(tolerance=0.0001)
+        if len(simplified.coords[0]) == 0:
+            # Over-simplified, use original geometry
+            simplified = self.geometry
+        else:
+            simplified = MultiPolygon(simplified)
         self.simplified_geometry = simplified
 
         super(BaseBoundary, self).save(*args, **kwargs)
