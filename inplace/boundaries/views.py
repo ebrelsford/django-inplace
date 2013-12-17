@@ -4,7 +4,7 @@ import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, DetailView, FormView
 
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -74,3 +74,19 @@ class LayerView(GeoJSONResponseMixin, JSONResponseView):
                 }
             ))
         return features
+
+
+class BoundaryDetailView(GeoJSONResponseMixin, JSONResponseView, DetailView):
+
+    def get_context_data(self, **kwargs):
+        return self.get_features()
+
+    def get_features(self):
+        boundary = self.get_object()
+        return [geojson.Feature(
+            boundary.pk,
+            geometry=json.loads(boundary.simplified_geometry.geojson),
+            properties={
+                'boundary_label': boundary.label,
+            }
+        ),]
