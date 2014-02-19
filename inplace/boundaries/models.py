@@ -42,7 +42,11 @@ class BaseBoundary(models.Model):
             # Over-simplified, use original geometry
             simplified = self.geometry
         else:
-            simplified = MultiPolygon(simplified)
+            try:
+                simplified = MultiPolygon(simplified)
+            except TypeError:
+                # Don't coerce Multipolygon to MultiPolygon
+                pass
         self.simplified_geometry = simplified
 
         super(BaseBoundary, self).save(*args, **kwargs)
