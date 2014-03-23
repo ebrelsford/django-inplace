@@ -12,6 +12,7 @@ class BaseGetBoundaryTag(AsTag):
     options = Options(
         Argument('lat'),
         Argument('lon'),
+        Argument('allow_multiple', required=False),
         'as',
         Argument('varname', resolve=False, required=False),
     )
@@ -19,12 +20,13 @@ class BaseGetBoundaryTag(AsTag):
     def get_boundary_model(self):
         raise NotImplementedError('Implement get_boundary_model()')
 
-    def get_value(self, context, lat, lon):
+    def get_value(self, context, lat, lon, allow_multiple):
         boundary_model = self.get_boundary_model()
         try:
-            return boundary_model.objects.get(
-                geometry__contains=Point(lon, lat, srid=4326)
-            )
+            kwargs = { 'geometry__contains': Point(lon, lat, srid=4326) }
+            if allow_multiple:
+                return boundary_model.objects.filter(**kwargs)
+            return boundary_model.objects.get(**kwargs)
         except boundary_model.DoesNotExist:
             return None
         except boundary_model.MultipleObjectsReturned:
