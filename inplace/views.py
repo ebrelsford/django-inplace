@@ -2,7 +2,7 @@ import geojson
 import json
 
 from django.contrib.gis.shortcuts import render_to_kml
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.generic import View
 from django.views.generic.base import TemplateResponseMixin
 from django.views.generic.detail import BaseDetailView, DetailView
@@ -14,7 +14,7 @@ def module_name():
 
 
 class JSONResponseView(View):
-    response_class = HttpResponse
+    response_class = JsonResponse
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -22,11 +22,7 @@ class JSONResponseView(View):
 
     def render_to_response(self, context, **response_kwargs):
         """Simple render to JSON"""
-        return self.response_class(
-            json.json.dumps(self.get_context_data(**self.kwargs),
-                            cls=json.DjangoJSONEncoder, ensure_ascii=False),
-            mimetype='application/json',
-        )
+        return self.response_class(self.get_context_data(**self.kwargs))
 
 
 class GeoJSONResponseMixin(object):
@@ -79,7 +75,7 @@ class GeoJSONResponseMixin(object):
         """
         return self.response_class(
             geojson.dumps(self.get_feature_collection(), separators=(',', ':')),
-            mimetype='application/json',
+            content_type='application/json',
         )
 
 
