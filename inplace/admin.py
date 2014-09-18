@@ -4,6 +4,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 
 class PlaceAdmin(OSMGeoAdmin, admin.ModelAdmin):
     list_display = ('name', 'city', 'state_province',)
+    openlayers_url = '//cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.min.js'
 
     @staticmethod
     def get_address_fieldset():
