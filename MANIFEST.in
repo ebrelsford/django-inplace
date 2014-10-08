@@ -1,0 +1,7 @@
+include COPYING
+include COPYING.LESSER
+include LICENSE
+include README.rst
+include setup.py
+recursive-include inplace *.py
+recursive-include inplace *.html
