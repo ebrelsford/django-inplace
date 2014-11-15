@@ -10,7 +10,7 @@ from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 
 from ..views import GeoJSONResponseMixin, JSONResponseView
 from .forms import BoundaryAddForm, LayerUploadForm
-from .models import Layer
+from .models import Boundary, Layer
 
 
 class LayerUploadView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -77,6 +77,7 @@ class LayerView(GeoJSONResponseMixin, JSONResponseView):
 
 
 class BoundaryDetailView(GeoJSONResponseMixin, JSONResponseView, DetailView):
+    model = Boundary
 
     def get_context_data(self, **kwargs):
         return self.get_features()

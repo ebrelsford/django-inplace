@@ -1,8 +1,14 @@
+from django import template
 from django.contrib.gis.geos import Point
 
 from classytags.arguments import Argument
 from classytags.core import Options
 from classytags.helpers import AsTag
+
+from ..models import Boundary
+
+
+register = template.Library()
 
 
 class BaseGetBoundaryTag(AsTag):
@@ -41,3 +47,17 @@ class BaseAllBoundariesTag(AsTag):
 
     def get_value(self, context):
         raise NotImplementedError('Implement get_value()')
+
+
+class AllBoundaries(AsTag):
+    options = Options(
+        Argument('layer'),
+        'as',
+        Argument('varname', required=True, resolve=False),
+    )
+
+    def get_value(self, context, layer):
+        return Boundary.objects.filter(layer__name=layer).order_by('label')
+
+
+register.tag(AllBoundaries)
