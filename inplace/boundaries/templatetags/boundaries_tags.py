@@ -60,4 +60,17 @@ class AllBoundaries(AsTag):
         return Boundary.objects.filter(layer__name=layer).order_by('label')
 
 
+class SortIntLabels(AsTag):
+    """Sort the given boundaries while assuming the labels are integers."""
+    options = Options(
+        Argument('boundaries', required=True, resolve=True),
+        'as',
+        Argument('varname', required=True, resolve=False),
+    )
+
+    def get_value(self, context, boundaries):
+        return sorted(boundaries, key=lambda d: int(d.label))
+
+
 register.tag(AllBoundaries)
+register.tag(SortIntLabels)
