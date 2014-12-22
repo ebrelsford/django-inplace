@@ -68,6 +68,7 @@ class LayerUploadForm(forms.ModelForm):
     source_file = forms.FileField(label=_('Upload a Zipped Shapefile'))
 
     class Meta:
+        fields = '__all__'
         model = Layer
 
     def clean_source_file(self):
