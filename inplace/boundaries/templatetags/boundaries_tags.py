@@ -39,6 +39,32 @@ class BaseGetBoundaryTag(AsTag):
             return None
 
 
+class GetBoundary(AsTag):
+    """A generic tag for finding the boundary that a point is in."""
+    options = Options(
+        Argument('layername'),
+        Argument('lat'),
+        Argument('lon'),
+        Argument('allow_multiple', required=False),
+        'as',
+        Argument('varname', resolve=False, required=False),
+    )
+
+    def get_value(self, context, layername, lat, lon, allow_multiple):
+        try:
+            kwargs = {
+                'geometry__contains': Point(lon, lat, srid=4326),
+                'layer__name': layername,
+            }
+            if allow_multiple:
+                return Boundary.objects.filter(**kwargs)
+            return Boundary.objects.get(**kwargs)
+        except Boundary.DoesNotExist:
+            return None
+        except Boundary.MultipleObjectsReturned:
+            return None
+
+
 class BaseAllBoundariesTag(AsTag):
     options = Options(
         'as',
@@ -73,4 +99,5 @@ class SortIntLabels(AsTag):
 
 
 register.tag(AllBoundaries)
+register.tag(GetBoundary)
 register.tag(SortIntLabels)
