@@ -1,4 +1,4 @@
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 
 from boundaries.views import (BoundaryAddView, BoundaryDetailView, LayerView,
                               LayerUploadView)
@@ -8,7 +8,7 @@ from .views import (PlacesGeoJSONDetailView, PlacesGeoJSONListView,
 
 
 def make_place_patterns(app_name, model_name, model_class):
-    return patterns('',
+    return [
 
         url(r'^$',
             PlacesListView.as_view(
@@ -47,9 +47,9 @@ def make_place_patterns(app_name, model_name, model_class):
             name='%s_%s_detail_popup' % (app_name, model_name),
         ),
 
-    )
+    ]
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^boundaries/layers/add/$', LayerUploadView.as_view(),
         name='layer_upload'),
     url(r'^boundaries/layers/(?P<pk>\d+)/add-boundaries/$',
@@ -58,7 +58,7 @@ urlpatterns = patterns('',
         name='layer_view'),
     url(r'^boundaries/(?P<pk>\d+)/$', BoundaryDetailView.as_view(),
         name='boundary_detail'),
-)
+]
 
 for place_subclass in Place.__subclasses__():
     meta = place_subclass._meta
@@ -66,8 +66,8 @@ for place_subclass in Place.__subclasses__():
     app = meta.app_label.lower()
     model_name = meta.object_name.lower()
 
-    urlpatterns += (
+    urlpatterns += [
         url(r'%s/%s/' % (app, model_name),
             include(make_place_patterns(app, model_name, place_subclass))
         ),
-    )
+    ]
