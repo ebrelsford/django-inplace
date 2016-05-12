@@ -3,7 +3,7 @@ import tempfile
 import zipfile
 
 from django import forms
-from django.forms.util import ValidationError
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis import gdal
 from django.contrib.gis.geos import MultiPolygon, Polygon
