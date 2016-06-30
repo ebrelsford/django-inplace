@@ -120,13 +120,15 @@ class AddAppModelMixin(object):
 class PlacesDetailView(AddAppModelMixin, DetailView):
 
     def get_template_names(self):
-        return [
-            self.template_name,
+        template_names = [
             '%s/%s/%s%s.html' % (module_name(), self._get_app_name(),
                                  self._get_model_name(),
                                  self.template_name_suffix),
             '%s/detail.html' % module_name(),
         ]
+        if self.template_name:
+            template_names.insert(0, self.template_name)
+        return template_names
 
 
 class PlacesPopupView(AddAppModelMixin, DetailView):
