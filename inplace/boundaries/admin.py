@@ -1,10 +1,14 @@
 from django.contrib import admin
-from django.contrib.gis.admin import OSMGeoAdmin
+
+try:
+    from leaflet.admin import LeafletGeoAdmin as GeoAdmin
+except ImportError:
+    from django.contrib.gis.admin import OSMGeoAdmin as GeoAdmin
 
 from .models import Boundary, Layer
 
 
-class BoundaryAdmin(OSMGeoAdmin, admin.ModelAdmin):
+class BoundaryAdmin(GeoAdmin, admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ('label', 'layer', 'geometry',),
@@ -14,7 +18,7 @@ class BoundaryAdmin(OSMGeoAdmin, admin.ModelAdmin):
     list_filters = ('layer',)
 
 
-class LayerAdmin(OSMGeoAdmin, admin.ModelAdmin):
+class LayerAdmin(GeoAdmin, admin.ModelAdmin):
     list_display = ('name', 'source_file',)
 
 

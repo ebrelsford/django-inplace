@@ -1,8 +1,12 @@
 from django.contrib import admin
-from django.contrib.gis.admin import OSMGeoAdmin
+
+try:
+    from leaflet.admin import LeafletGeoAdmin as GeoAdmin
+except ImportError:
+    from django.contrib.gis.admin import OSMGeoAdmin as GeoAdmin
 
 
-class PlaceAdmin(OSMGeoAdmin, admin.ModelAdmin):
+class PlaceAdmin(GeoAdmin, admin.ModelAdmin):
     list_display = ('name', 'city', 'state_province',)
     openlayers_url = '//cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.min.js'
 
